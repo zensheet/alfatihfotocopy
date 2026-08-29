@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Al Fatih POS &amp; Inventory</title>
+<meta name="description" content="Kasir dan inventory untuk Al Fatih Alat Tulis Kantor & Foto Copy.">
+<link rel="icon" href="logo.webp">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0B1F4D;
+    --navy-2:#122B63;
+    --blue:#1567D6;
+    --blue-2:#2AA8F2;
+    --yellow:#FFC72C;
+    --yellow-dark:#C98A12;
+    --surface:#F4F7FC;
+    --card:#FFFFFF;
+    --ink:#0B1F4D;
+    --ink-soft:#5B6A85;
+    --ink-faint:#94A0B8;
+    --line:#E3E8F2;
+    --line-soft:#EDF1F8;
+    --lunas:#1E8E5A;
+    --lunas-bg:#E4F5EC;
+    --warn:#B4791C;
+    --warn-bg:#FDF1DA;
+    --danger:#C0392B;
+    --danger-bg:#FBE7E4;
+    --font-display:'Space Grotesk',sans-serif;
+    --font-body:'Plus Jakarta Sans',sans-serif;
+    --font-mono:'JetBrains Mono',monospace;
+    --shadow-card:0 1px 2px rgba(11,31,77,.05), 0 10px 28px -16px rgba(11,31,77,.22);
+    --shadow-pop:0 22px 44px -14px rgba(11,31,77,.38);
+    --grad-blue:linear-gradient(100deg, var(--blue), var(--blue-2));
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0; background:var(--surface); color:var(--ink); font-family:var(--font-body); line-height:1.5;
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.001ms !important; transition-duration:0.001ms !important;}
+  }
+  h1,h2,h3{font-family:var(--font-display); margin:0; color:var(--navy);}
+  p{margin:0;}
+  a{color:inherit;}
+  ::selection{background:var(--yellow); color:var(--navy);}
+  img{display:block; max-width:100%;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
+
+  /* ---------- TOPNAV ---------- */
+  .topnav{position:sticky; top:0; z-index:50; background:rgba(244,247,252,.9); backdrop-filter:blur(8px); border-bottom:1px solid var(--line);}
+  .topnav__inner{max-width:1180px; margin:0 auto; padding:12px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px;}
+  .brand{display:flex; align-items:center; gap:10px; text-decoration:none;}
+  .brand__logo{height:38px; width:auto;}
+  .brand__name{font-family:var(--font-display); font-weight:700; font-size:15px; color:var(--navy);}
+  .brand__sub{display:block; font-family:var(--font-body); font-weight:500; font-size:10.5px; color:var(--ink-soft);}
+  .navlinks{display:flex; gap:4px; list-style:none; margin:0; padding:0;}
+  .navlinks a{font-size:13px; font-weight:600; text-decoration:none; color:var(--ink-soft); padding:8px 12px; border-radius:20px; transition:background .15s ease, color .15s ease;}
+  .navlinks a:hover{background:var(--card); color:var(--navy);}
+  .navtag{font-family:var(--font-mono); font-size:11px; font-weight:700; color:var(--navy); background:var(--yellow); padding:6px 12px; border-radius:20px; white-space:nowrap;}
+  @media (max-width:820px){ .navlinks{display:none;} }
+
+  /* ---------- HERO ---------- */
+  .hero{padding:76px 0 60px; position:relative; overflow:hidden;}
+  .hero::before{
+    content:""; position:absolute; top:-140px; right:-160px; width:520px; height:520px; border-radius:50%;
+    background:var(--grad-blue); opacity:.10; filter:blur(2px);
+  }
+  .hero::after{
+    content:""; position:absolute; top:60px; right:-40px; width:340px; height:340px; border-radius:50%;
+    border:2px solid var(--yellow); opacity:.5;
+  }
+  .hero__inner{position:relative;}
+  .hero__eyebrow{font-family:var(--font-mono); font-size:12px; font-weight:600; color:var(--blue); text-transform:uppercase; letter-spacing:.12em; margin-bottom:18px; display:block;}
+  .hero h1{font-size:clamp(30px,5vw,50px); line-height:1.1; font-weight:700; max-width:760px; letter-spacing:-.01em;}
+  .hero h1 span{background:var(--grad-blue); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .hero__desc{margin-top:20px; font-size:16.5px; color:var(--ink-soft); max-width:540px; line-height:1.65;}
+  .hero__facts{display:flex; flex-wrap:wrap; gap:10px; margin-top:30px;}
+  .fact{display:flex; align-items:center; gap:8px; background:var(--card); border:1px solid var(--line); padding:8px 14px; border-radius:20px; font-size:13px; font-weight:600; color:var(--ink-soft); box-shadow:var(--shadow-card);}
+  .fact__dot{width:7px; height:7px; border-radius:50%; background:var(--lunas); flex:none;}
+  .hero__logo{position:absolute; top:6px; right:24px; width:180px; opacity:.94;}
+  @media (max-width:900px){ .hero__logo{display:none;} }
+
+  /* ---------- SECTION HEAD ---------- */
+  .section{padding:68px 0;}
+  .section--alt{background:var(--card); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .section-head{max-width:640px; margin-bottom:40px;}
+  .eyebrow{font-family:var(--font-mono); font-size:12px; font-weight:600; color:var(--blue); letter-spacing:.1em; text-transform:uppercase; display:block; margin-bottom:12px;}
+  .section-head h2{font-size:clamp(22px,3.2vw,32px); font-weight:700; letter-spacing:-.01em;}
+  .section-head p{margin-top:14px; font-size:15px; color:var(--ink-soft); line-height:1.65;}
+
+  .reveal{opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease;}
+  .reveal.is-visible{opacity:1; transform:translateY(0);}
+
+  /* ---------- KASIR LAYOUT ---------- */
+  .kasir-layout{display:grid; grid-template-columns:400px 1fr; gap:52px; align-items:start;}
+  @media (max-width:960px){ .kasir-layout{grid-template-columns:1fr; justify-items:center;} }
+  .flowlist{list-style:none; margin:0; padding:0; position:relative; max-width:360px;}
+  .flowlist::before{content:""; position:absolute; left:15px; top:8px; bottom:8px; width:1px; background:var(--line);}
+  .flowlist li{position:relative; padding:0 0 28px 46px;}
+  .flowlist li:last-child{padding-bottom:0;}
+  .flowstep{position:absolute; left:0; top:0; width:32px; height:32px; border-radius:50%; background:var(--card); border:1px solid var(--line); color:var(--navy); font-family:var(--font-mono); font-size:12px; font-weight:700; display:flex; align-items:center; justify-content:center;}
+  .flowlist strong{display:block; font-size:14.5px; font-weight:700; margin-bottom:3px; color:var(--navy);}
+  .flowlist span{font-size:13.5px; color:var(--ink-soft); line-height:1.55;}
+
+  /* ---------- PHONE FRAME ---------- */
+  .phone{width:376px; height:772px; background:var(--navy); border-radius:44px; padding:12px; box-shadow:var(--shadow-pop); flex:none;}
+  .phone__screen{width:100%; height:100%; background:#FFFFFF; border-radius:32px; overflow:hidden; position:relative; display:flex; flex-direction:column; font-size:14px;}
+  .phone__statusbar{display:flex; align-items:center; justify-content:space-between; padding:12px 22px 4px; font-family:var(--font-mono); font-size:11.5px; font-weight:600; color:var(--navy);}
+  .statusicons{display:flex; gap:4px; align-items:center;}
+  .statusicons span{width:3px; height:9px; background:var(--navy); border-radius:1px;}
+  .statusicons span:nth-child(2){height:11px;} .statusicons span:nth-child(3){height:13px;}
+  .phone__topbar{padding:6px 20px 14px; display:flex; align-items:center; justify-content:space-between;}
+  .phone__topbar h3{font-size:19px; font-weight:700;}
+  .icobtn{width:34px; height:34px; border-radius:50%; background:var(--surface); border:none; display:flex; align-items:center; justify-content:center; color:var(--navy); cursor:pointer;}
+  .phone__search{padding:0 20px 12px; display:flex; gap:8px;}
+  .searchbox{flex:1; display:flex; align-items:center; gap:8px; background:var(--surface); border-radius:12px; padding:10px 12px; color:var(--ink-faint); font-size:13px;}
+  .scanbtn{width:42px; border-radius:12px; background:var(--navy); color:#fff; border:none; display:flex; align-items:center; justify-content:center; cursor:pointer;}
+  .phone__chips{display:flex; gap:8px; padding:0 20px 14px; overflow-x:auto;}
+  .chip{font-size:12.5px; font-weight:600; padding:7px 14px; border-radius:20px; white-space:nowrap; background:var(--surface); color:var(--ink-soft); border:1px solid transparent; cursor:pointer;}
+  .chip.is-active{background:var(--navy); color:#fff;}
+  .phone__grid{flex:1; overflow-y:auto; padding:0 20px 190px; display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+  .pcard{background:var(--card); border:1px solid var(--line-soft); border-radius:14px; padding:10px; cursor:pointer; transition:transform .12s ease, box-shadow .12s ease;}
+  .pcard:hover{transform:translateY(-2px); box-shadow:var(--shadow-card);}
+  .pcard__thumb{width:100%; aspect-ratio:1.4; border-radius:10px; margin-bottom:8px; display:flex; align-items:center; justify-content:center; font-family:var(--font-display); font-weight:700; font-size:14px; color:#fff;}
+  .pcard__name{font-size:12.5px; font-weight:600; line-height:1.3; margin-bottom:2px;}
+  .pcard__meta{font-size:11px; color:var(--ink-faint); margin-bottom:6px;}
+  .pcard__row{display:flex; align-items:center; justify-content:space-between;}
+  .pcard__price{font-family:var(--font-mono); font-size:12.5px; font-weight:700;}
+  .pcard__add{width:24px; height:24px; border-radius:50%; background:var(--navy); color:#fff; border:none; font-size:15px; line-height:1; cursor:pointer;}
+  .pcard.out .pcard__thumb{opacity:.35;}
+  .pcard.out .pcard__add{background:var(--ink-faint); cursor:not-allowed;}
+
+  .phone__cart{position:absolute; left:0; right:0; bottom:0; background:#fff; border-top:1px solid var(--line); border-radius:22px 22px 0 0; box-shadow:0 -12px 24px -18px rgba(11,31,77,.3); padding:14px 18px 18px; max-height:66%; display:flex; flex-direction:column;}
+  .cart__handle{width:36px; height:4px; background:var(--line); border-radius:4px; margin:0 auto 10px;}
+  .cart__head{display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;}
+  .cart__head h4{font-size:13.5px; font-weight:700;}
+  .cart__head span{font-family:var(--font-mono); font-size:11.5px; color:var(--ink-soft);}
+  .cart__items{overflow-y:auto; flex:1; margin-bottom:8px; min-height:10px;}
+  .cart__empty{font-size:12.5px; color:var(--ink-faint); padding:14px 0; text-align:center;}
+  .citem{display:flex; align-items:center; gap:10px; padding:7px 0; border-bottom:1px dashed var(--line-soft);}
+  .citem__name{flex:1; font-size:12.5px; font-weight:600;}
+  .citem__sub{display:block; font-family:var(--font-mono); font-size:11px; color:var(--ink-faint); font-weight:400;}
+  .qtystep{display:flex; align-items:center; gap:6px;}
+  .qtystep button{width:22px; height:22px; border-radius:6px; border:1px solid var(--line); background:var(--surface); font-size:13px; cursor:pointer; color:var(--navy);}
+  .qtystep span{font-family:var(--font-mono); font-size:12.5px; width:18px; text-align:center;}
+  .citem__total{font-family:var(--font-mono); font-size:12.5px; font-weight:700; width:64px; text-align:right;}
+  .cart__totals{border-top:1px solid var(--line-soft); padding-top:8px; font-family:var(--font-mono); font-size:12.5px;}
+  .trow{display:flex; justify-content:space-between; padding:2px 0; color:var(--ink-soft);}
+  .trow.grand{color:var(--navy); font-weight:700; font-size:15px; padding-top:6px;}
+  .paybtn{margin-top:10px; width:100%; padding:13px; border:none; border-radius:14px; background:var(--grad-blue); color:#fff; font-family:var(--font-display); font-weight:700; font-size:15px; letter-spacing:.02em; cursor:pointer; transition:filter .15s ease;}
+  .paybtn:hover{filter:brightness(1.06);}
+  .paybtn:disabled{background:var(--ink-faint); cursor:not-allowed;}
+
+  .overlay{position:absolute; inset:0; background:rgba(11,31,77,.5); display:none; align-items:flex-end; z-index:20;}
+  .overlay.show{display:flex;}
+  .sheet{background:#fff; width:100%; border-radius:24px 24px 0 0; padding:20px; max-height:88%; overflow-y:auto;}
+  .sheet__head{display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;}
+  .sheet__head h4{font-size:16px; font-weight:700;}
+  .closex{background:none; border:none; font-size:18px; color:var(--ink-soft); cursor:pointer;}
+  .paymethods{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;}
+  .paymethods button{padding:10px; border-radius:12px; border:1px solid var(--line); background:var(--surface); font-size:12.5px; font-weight:600; color:var(--ink-soft); cursor:pointer;}
+  .paymethods button.is-active{background:var(--navy); color:#fff; border-color:var(--navy);}
+  .cashgrid{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px;}
+  .cashgrid button{padding:10px; border-radius:12px; border:1px solid var(--line); background:#fff; font-family:var(--font-mono); font-size:12.5px; font-weight:600; cursor:pointer;}
+  .kembali-row{display:flex; justify-content:space-between; font-family:var(--font-mono); font-size:13px; padding:8px 2px; color:var(--ink-soft);}
+  .kembali-row strong{color:var(--lunas);}
+  .confirmbtn{width:100%; padding:13px; border:none; border-radius:14px; background:var(--navy); color:#fff; font-family:var(--font-display); font-weight:700; font-size:15px; cursor:pointer; margin-top:6px;}
+
+  .receipt{background:#fff; width:100%; border-radius:18px; padding:22px 20px 26px; position:relative; font-family:var(--font-mono);
+    background-image:radial-gradient(circle at 8px 0, transparent 7px, #fff 7.5px); background-size:16px 16px; background-position:top; box-shadow:var(--shadow-card);}
+  .receipt__stamp{width:88px; height:88px; border:3px solid var(--lunas); border-radius:50%; color:var(--lunas); font-family:var(--font-display); font-weight:700; font-size:16px; letter-spacing:.05em; display:flex; align-items:center; justify-content:center; margin:6px auto 14px; transform:rotate(-9deg) scale(0); opacity:0; text-align:center; animation:stampin .45s cubic-bezier(.2,1.5,.4,1) .15s forwards;}
+  @keyframes stampin{ to{ transform:rotate(-9deg) scale(1); opacity:1; } }
+  .receipt h5{font-family:var(--font-display); text-align:center; font-size:14px; margin-bottom:2px; letter-spacing:.03em;}
+  .receipt .rsub{text-align:center; font-size:10.5px; color:var(--ink-soft); margin-bottom:10px;}
+  .rline{display:flex; justify-content:space-between; font-size:12px; padding:2px 0; color:var(--navy);}
+  .rline.dim{color:var(--ink-soft); font-size:11px;}
+  .rdash{border-top:1px dashed var(--line); margin:8px 0;}
+  .rgrand{display:flex; justify-content:space-between; font-size:14px; font-weight:700; padding:4px 0;}
+  .rthanks{text-align:center; font-size:11px; color:var(--ink-soft); margin-top:12px; font-family:var(--font-body); font-style:italic;}
+  .receiptbtns{display:flex; gap:8px; margin-top:16px;}
+  .receiptbtns button{flex:1; padding:11px; border-radius:12px; font-family:var(--font-body); font-weight:700; font-size:12.5px; cursor:pointer; border:1px solid var(--line);}
+  .receiptbtns .primary{background:var(--navy); color:#fff; border-color:var(--navy);}
+  .receiptbtns .ghost{background:#fff; color:var(--navy);}
+
+  /* ---------- DASHBOARD MOCK ---------- */
+  .browserchrome{background:var(--card); border:1px solid var(--line); border-radius:16px 16px 0 0; padding:10px 16px; display:flex; align-items:center; gap:8px;}
+  .dots{display:flex; gap:6px;}
+  .dots span{width:9px; height:9px; border-radius:50%; background:var(--line);}
+  .addressbar{flex:1; background:var(--surface); border-radius:8px; padding:5px 12px; font-family:var(--font-mono); font-size:11.5px; color:var(--ink-faint); text-align:center;}
+  .dash-frame{border:1px solid var(--line); border-top:none; border-radius:0 0 16px 16px; overflow:hidden; display:flex; background:#fff; box-shadow:var(--shadow-card);}
+  .dash-sidebar{width:212px; flex:none; background:var(--navy); color:#DDE5F5; padding:20px 14px;}
+  .dash-sidebar__brand{font-family:var(--font-display); font-weight:700; font-size:13.5px; margin-bottom:18px; color:#fff; display:flex; align-items:center; gap:8px;}
+  .dash-sidebar__logo{width:22px; height:22px; border-radius:5px; background:#fff; padding:2px;}
+  .navgroup{margin-bottom:14px;}
+  .navgroup__label{font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:#7C8CB0; margin:0 0 6px 8px; font-weight:600;}
+  .navgroup a{display:block; font-size:12.5px; padding:7px 10px; border-radius:8px; color:#C7D2EA; text-decoration:none; margin-bottom:1px;}
+  .navgroup a.is-active{background:rgba(255,255,255,.12); color:#fff; font-weight:600;}
+  .dash-main{flex:1; padding:26px 28px; min-width:0; overflow-x:auto;}
+  .dash-toprow{display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;}
+  .dash-toprow h4{font-size:19px; font-weight:700;}
+  .dash-toprow p{font-size:12.5px; color:var(--ink-soft); margin-top:2px;}
+  .today-pill{font-family:var(--font-mono); font-size:11.5px; background:var(--surface); padding:6px 12px; border-radius:20px; color:var(--ink-soft);}
+  .cardgrid{display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-bottom:26px;}
+  .metric{background:var(--card); border:1px solid var(--line-soft); border-radius:14px; padding:16px 18px;}
+  .metric__label{font-size:12px; color:var(--ink-soft); font-weight:600; margin-bottom:8px;}
+  .metric__value{font-family:var(--font-mono); font-size:20px; font-weight:700; color:var(--navy);}
+  .metric__delta{font-size:11px; color:var(--lunas); margin-top:6px; font-weight:600;}
+  .dash-columns{display:grid; grid-template-columns:1.3fr 1fr; gap:16px;}
+  .panel{background:var(--card); border:1px solid var(--line-soft); border-radius:14px; padding:18px;}
+  .panel h5{font-size:13.5px; font-weight:700; margin-bottom:12px; color:var(--navy);}
+  .alertrow{display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid var(--line-soft); font-size:12.5px;}
+  .alertrow:last-child{border-bottom:none;}
+  .alertrow__name{font-weight:600;}
+  .alertrow__meta{color:var(--ink-faint); font-family:var(--font-mono); font-size:11px;}
+  .stamp-tag{font-family:var(--font-mono); font-size:10px; font-weight:700; padding:4px 9px; border-radius:20px; border:1.5px solid currentColor; text-transform:uppercase; letter-spacing:.03em; white-space:nowrap;}
+  .stamp-tag.menipis{color:var(--warn); background:var(--warn-bg);}
+  .stamp-tag.habis{color:var(--danger); background:var(--danger-bg);}
+  .stamp-tag.aman{color:var(--lunas); background:var(--lunas-bg);}
+  .toprow{display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid var(--line-soft); font-size:12.5px;}
+  .toprow:last-child{border-bottom:none;}
+  .topnum{font-family:var(--font-mono); font-size:11px; color:var(--ink-faint); width:18px;}
+  .topqty{font-family:var(--font-mono); font-size:11.5px; color:var(--ink-soft);}
+  @media (max-width:940px){ .dash-sidebar{display:none;} .cardgrid{grid-template-columns:1fr 1fr;} .dash-columns{grid-template-columns:1fr;} }
+  @media (max-width:560px){ .cardgrid{grid-template-columns:1fr;} }
+
+  /* ---------- PRODUK TABLE ---------- */
+  .table-card{background:var(--card); border:1px solid var(--line-soft); border-radius:16px; overflow:hidden;}
+  .table-toolbar{display:flex; gap:10px; padding:16px 18px; border-bottom:1px solid var(--line-soft); flex-wrap:wrap;}
+  .table-search{flex:1; min-width:180px; display:flex; align-items:center; gap:8px; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:9px 12px; font-size:13px; color:var(--ink-soft);}
+  .table-search input{border:none; outline:none; background:none; font-size:13px; width:100%; font-family:var(--font-body); color:var(--navy);}
+  .tchip{font-size:12px; font-weight:600; padding:8px 14px; border-radius:10px; background:var(--surface); border:1px solid var(--line); color:var(--ink-soft); cursor:pointer;}
+  .tchip.is-active{background:var(--navy); color:#fff; border-color:var(--navy);}
+  .table-scroll{overflow-x:auto;}
+  table{width:100%; border-collapse:collapse; min-width:720px;}
+  thead th{text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-faint); font-weight:700; padding:12px 18px; border-bottom:1px solid var(--line-soft); white-space:nowrap;}
+  tbody td{padding:13px 18px; font-size:13px; border-bottom:1px solid var(--line-soft); vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:var(--surface);}
+  .cell-sku{font-family:var(--font-mono); font-size:11.5px; color:var(--ink-faint);}
+  .cell-name{font-weight:600; color:var(--navy);}
+  .cell-cat{color:var(--ink-soft);}
+  .cell-price{font-family:var(--font-mono); font-weight:600; color:var(--navy);}
+  .cell-stock{font-family:var(--font-mono);}
+
+  /* ---------- ROADMAP ---------- */
+  .roadmap{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+  @media (max-width:900px){ .roadmap{grid-template-columns:1fr 1fr;} }
+  @media (max-width:560px){ .roadmap{grid-template-columns:1fr;} }
+  .phasecard{background:var(--card); border:1px solid var(--line-soft); border-radius:14px; padding:18px; position:relative;}
+  .phasecard__num{font-family:var(--font-mono); font-size:12px; color:var(--blue); font-weight:700; margin-bottom:10px;}
+  .phasecard h6{font-family:var(--font-display); font-size:14.5px; font-weight:700; margin-bottom:8px; color:var(--navy);}
+  .phasecard p{font-size:12.5px; color:var(--ink-soft); line-height:1.55;}
+  .phasecard.is-current{border-color:var(--blue); box-shadow:0 0 0 3px rgba(21,103,214,.08);}
+
+  .closing{margin-top:52px; background:var(--navy); color:#DDE5F5; border-radius:22px; padding:40px 36px; display:flex; justify-content:space-between; align-items:center; gap:24px; flex-wrap:wrap; position:relative; overflow:hidden;}
+  .closing::before{content:""; position:absolute; right:-60px; top:-60px; width:260px; height:260px; border-radius:50%; background:var(--grad-blue); opacity:.25;}
+  .closing__text{position:relative;}
+  .closing h3{color:#fff; font-size:22px; margin-bottom:8px;}
+  .closing p{color:#AEBBDA; font-size:14px; max-width:440px; line-height:1.6;}
+  .closing__badge{position:relative; font-family:var(--font-mono); font-size:12px; font-weight:700; color:var(--navy); background:var(--yellow); border-radius:50%; width:96px; height:96px; flex:none; display:flex; align-items:center; justify-content:center; text-align:center; transform:rotate(6deg); line-height:1.3;}
+
+  footer{padding:32px 0 48px; text-align:center; font-size:12px; color:var(--ink-faint); font-family:var(--font-mono);}
+</style>
+</head>
+<body>
+
+<nav class="topnav">
+  <div class="topnav__inner">
+    <a class="brand" href="#hero">
+      <img class="brand__logo" src="logo.webp" alt="Logo Al Fatih">
+      <span><span class="brand__name">Al Fatih POS</span><span class="brand__sub">Alat Tulis Kantor &amp; Foto Copy</span></span>
+    </a>
+    <ul class="navlinks">
+      <li><a href="#kasir">Kasir</a></li>
+      <li><a href="#dashboard">Dashboard</a></li>
+      <li><a href="#produk">Produk</a></li>
+      <li><a href="#roadmap">Roadmap</a></li>
+    </ul>
+    <span class="navtag">MVP · V1.0</span>
+  </div>
+</nav>
+
+<header class="hero" id="hero">
+  <div class="wrap hero__inner">
+    <img class="hero__logo" src="logo.webp" alt="">
+    <span class="hero__eyebrow">Al Fatih POS &amp; Inventory — MVP</span>
+    <h1>Kasir sederhana di depan,<br><span>inventory kuat</span> di belakang.</h1>
+    <p class="hero__desc">Sistem kasir dan inventory untuk Toko Al Fatih — mengelola penjualan ATK, jasa fotocopy, print, dan scan, dengan stok yang selalu akurat.</p>
+    <div class="hero__facts">
+      <div class="fact"><span class="fact__dot"></span> Mobile-first (360–430px)</div>
+      <div class="fact"><span class="fact__dot"></span> Tetap nyaman di desktop</div>
+      <div class="fact"><span class="fact__dot"></span> Stok otomatis, bukan manual</div>
+    </div>
+  </div>
+</header>
+
+<section class="section" id="kasir">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">01 — Kasir</span>
+      <h2>Transaksi secepat kasir minimarket</h2>
+      <p>Coba langsung: klik produk untuk menambah ke keranjang, atur jumlah, lalu tekan Bayar.</p>
+    </div>
+    <div class="kasir-layout">
+      <div class="phone reveal">
+        <div class="phone__screen">
+          <div class="phone__statusbar">
+            <span>09:41</span>
+            <span class="statusicons"><span></span><span></span><span></span></span>
+          </div>
+          <div class="phone__topbar">
+            <h3>Kasir</h3>
+            <button class="icobtn" title="Riwayat" type="button">⏱</button>
+          </div>
+          <div class="phone__search">
+            <div class="searchbox">🔍&nbsp; Cari nama, SKU, atau scan barcode…</div>
+            <button class="scanbtn" title="Scan barcode" type="button">▤</button>
+          </div>
+          <div class="phone__chips" id="chipRow"></div>
+          <div class="phone__grid" id="productGrid"></div>
+
+          <div class="phone__cart">
+            <div class="cart__handle"></div>
+            <div class="cart__head">
+              <h4 id="cartCountLabel">Keranjang (0 item)</h4>
+              <span>Al Fatih Kasir</span>
+            </div>
+            <div class="cart__items" id="cartItems"></div>
+            <div class="cart__totals">
+              <div class="trow"><span>Subtotal</span><span id="tSubtotal">Rp0</span></div>
+              <div class="trow"><span>Diskon</span><span id="tDiskon">Rp0</span></div>
+              <div class="trow grand"><span>TOTAL</span><span id="tTotal">Rp0</span></div>
+            </div>
+            <button class="paybtn" id="payBtn" type="button" disabled>BAYAR</button>
+          </div>
+
+          <div class="overlay" id="payOverlay">
+            <div class="sheet">
+              <div class="sheet__head">
+                <h4>Pembayaran</h4>
+                <button class="closex" type="button" onclick="closePay()">✕</button>
+              </div>
+              <div class="paymethods" id="payMethods"></div>
+              <div id="cashArea">
+                <div class="cashgrid" id="cashGrid"></div>
+                <div class="kembali-row"><span>Kembalian</span><strong id="kembaliVal">Rp0</strong></div>
+              </div>
+              <button class="confirmbtn" type="button" onclick="confirmPay()">Selesaikan Pembayaran</button>
+            </div>
+          </div>
+
+          <div class="overlay" id="receiptOverlay">
+            <div class="receipt" id="receiptCard">
+              <div class="receipt__stamp">LUNAS</div>
+              <h5>AL FATIH</h5>
+              <div class="rsub">Alat Tulis Kantor &amp; Foto Copy</div>
+              <div class="rline dim"><span id="rInvoice">AF-20260829-0001</span><span id="rDate">29/08/2026</span></div>
+              <div class="rdash"></div>
+              <div id="rItems"></div>
+              <div class="rdash"></div>
+              <div class="rline"><span>Subtotal</span><span id="rSubtotal">Rp0</span></div>
+              <div class="rline"><span>Diskon</span><span id="rDiskon">Rp0</span></div>
+              <div class="rgrand"><span>TOTAL</span><span id="rTotal">Rp0</span></div>
+              <div class="rline dim"><span id="rMethodLabel">Cash</span><span id="rBayar">Rp0</span></div>
+              <div class="rline dim"><span>Kembali</span><span id="rKembali">Rp0</span></div>
+              <div class="rthanks">Terima kasih sudah berbelanja</div>
+              <div class="receiptbtns">
+                <button class="ghost" type="button" onclick="closeReceipt()">Tutup</button>
+                <button class="primary" type="button" onclick="newTransaction()">Transaksi Baru</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ol class="flowlist reveal">
+        <li><div class="flowstep">1</div><strong>Cari / Scan</strong><span>Ketik nama produk, SKU, atau scan barcode dengan kamera HP maupun scanner USB.</span></li>
+        <li><div class="flowstep">2</div><strong>Tambah ke Keranjang</strong><span>Tap produk untuk menambah. Kartu produk langsung menunjukkan stok yang tersedia.</span></li>
+        <li><div class="flowstep">3</div><strong>Atur Qty &amp; Diskon</strong><span>Ubah jumlah dari keranjang, hapus item, atau beri diskon tanpa pindah halaman.</span></li>
+        <li><div class="flowstep">4</div><strong>Bayar</strong><span>Pilih metode: Cash, QRIS, Transfer, Debit, atau Piutang. Kembalian dihitung otomatis.</span></li>
+        <li><div class="flowstep">5</div><strong>Selesai</strong><span>Struk tampil dengan stempel LUNAS, siap dicetak atau dicetak ulang dari riwayat.</span></li>
+      </ol>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" id="dashboard">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">02 — Dashboard</span>
+      <h2>Ringkasan usaha dalam satu layar</h2>
+      <p>Penjualan hari ini, stok yang perlu diisi ulang, dan produk terlaris — tanpa harus buka banyak menu.</p>
+    </div>
+
+    <div class="reveal">
+      <div class="browserchrome">
+        <div class="dots"><span></span><span></span><span></span></div>
+        <div class="addressbar">alfatihpos.app/dashboard</div>
+      </div>
+      <div class="dash-frame">
+        <aside class="dash-sidebar">
+          <div class="dash-sidebar__brand"><img class="dash-sidebar__logo" src="logo.webp" alt=""> Al Fatih POS</div>
+          <div class="navgroup"><a class="is-active" href="#">Dashboard</a></div>
+          <div class="navgroup">
+            <p class="navgroup__label">Kasir</p>
+            <a href="#">Kasir</a>
+            <a href="#">Riwayat Penjualan</a>
+          </div>
+          <div class="navgroup">
+            <p class="navgroup__label">Inventory</p>
+            <a href="#">Produk</a>
+            <a href="#">Stok</a>
+            <a href="#">Pembelian</a>
+            <a href="#">Stock Adjustment</a>
+          </div>
+          <div class="navgroup">
+            <p class="navgroup__label">Master Data</p>
+            <a href="#">Kategori</a>
+            <a href="#">Supplier</a>
+            <a href="#">Customer</a>
+          </div>
+          <div class="navgroup">
+            <p class="navgroup__label">Keuangan</p>
+            <a href="#">Hutang Supplier</a>
+            <a href="#">Piutang Customer</a>
+            <a href="#">Pengeluaran</a>
+          </div>
+          <div class="navgroup">
+            <p class="navgroup__label">Laporan</p>
+            <a href="#">Laba &amp; Rugi</a>
+          </div>
+        </aside>
+
+        <div class="dash-main">
+          <div class="dash-toprow">
+            <div>
+              <h4>Halo, Admin 👋</h4>
+              <p>Berikut ringkasan usaha Al Fatih hari ini.</p>
+            </div>
+            <span class="today-pill">Sabtu, 29 Agustus 2026</span>
+          </div>
+
+          <div class="cardgrid">
+            <div class="metric"><div class="metric__label">Penjualan Hari Ini</div><div class="metric__value">Rp1.250.000</div><div class="metric__delta">42 transaksi</div></div>
+            <div class="metric"><div class="metric__label">Penjualan Bulan Ini</div><div class="metric__value">Rp25.500.000</div><div class="metric__delta">↑ dari bulan lalu</div></div>
+            <div class="metric"><div class="metric__label">Pengeluaran Bulan Ini</div><div class="metric__value">Rp4.200.000</div><div class="metric__delta" style="color:var(--warn)">Listrik, internet, transport</div></div>
+            <div class="metric"><div class="metric__label">Laba Kotor Bulan Ini</div><div class="metric__value">Rp9.800.000</div><div class="metric__delta">Berdasarkan harga modal saat transaksi</div></div>
+            <div class="metric"><div class="metric__label">Nilai Inventory</div><div class="metric__value">Rp18.400.000</div><div class="metric__delta">Stok × harga modal</div></div>
+            <div class="metric"><div class="metric__label">Item Perlu Diisi Ulang</div><div class="metric__value">3 produk</div><div class="metric__delta" style="color:var(--danger)">1 habis, 2 menipis</div></div>
+          </div>
+
+          <div class="dash-columns">
+            <div class="panel">
+              <h5>Peringatan Stok</h5>
+              <div id="alertList"></div>
+            </div>
+            <div class="panel">
+              <h5>Produk Terlaris — Bulan Ini</h5>
+              <div class="toprow"><span class="topnum">1</span><span style="flex:1">Pulpen Standard</span><span class="topqty">250 pcs</span></div>
+              <div class="toprow"><span class="topnum">2</span><span style="flex:1">Buku Tulis</span><span class="topqty">180 pcs</span></div>
+              <div class="toprow"><span class="topnum">3</span><span style="flex:1">Fotocopy A4</span><span class="topqty">1.200 lbr</span></div>
+              <div class="toprow"><span class="topnum">4</span><span style="flex:1">Kertas A4 70gr</span><span class="topqty">14 rim</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="produk">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">03 — Produk &amp; Inventory</span>
+      <h2>Semua barang dan jasa, satu daftar</h2>
+      <p>Barang fisik (PRODUCT) mengurangi stok saat terjual, jasa (SERVICE) seperti fotocopy tidak.</p>
+    </div>
+    <div class="table-card reveal">
+      <div class="table-toolbar">
+        <div class="table-search">🔍 <input id="tableSearch" type="text" placeholder="Cari nama atau SKU produk…"></div>
+        <button class="tchip is-active" data-tf="ALL" type="button">Semua</button>
+        <button class="tchip" data-tf="PRODUCT" type="button">Barang</button>
+        <button class="tchip" data-tf="SERVICE" type="button">Jasa</button>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>SKU</th><th>Nama</th><th>Kategori</th><th>Stok</th><th>Satuan</th><th>Harga Jual</th><th>Status</th></tr></thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section section--alt" id="roadmap">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">04 — Tahap Berikutnya</span>
+      <h2>MVP ini adalah titik awal</h2>
+      <p>Setelah tampilan disetujui, pengembangan dilanjutkan bertahap — fondasi database dahulu, baru fitur kasir yang aman dari bentrok stok.</p>
+    </div>
+    <div class="roadmap reveal">
+      <div class="phasecard is-current"><div class="phasecard__num">FASE 0</div><h6>Audit &amp; Fondasi</h6><p>Review struktur project, database, dan arsitektur API sebelum coding dimulai.</p></div>
+      <div class="phasecard"><div class="phasecard__num">FASE 1</div><h6>Database &amp; Backend</h6><p>Kategori, produk, supplier, customer, pengeluaran, dan struktur stok.</p></div>
+      <div class="phasecard"><div class="phasecard__num">FASE 2</div><h6>Produk &amp; Inventory</h6><p>CRUD produk, kategori, barcode, SKU, harga modal, dan stock movement.</p></div>
+      <div class="phasecard"><div class="phasecard__num">FASE 3</div><h6>Kasir (POS)</h6><p>Search, keranjang, diskon, pembayaran, struk, dan riwayat transaksi.</p></div>
+    </div>
+
+    <div class="closing reveal">
+      <div class="closing__text">
+        <h3>Siap dilanjutkan ke pengembangan?</h3>
+        <p>MVP ini tampilan awal — warna, copy, dan layout mengikuti brand Al Fatih, terbuka untuk revisi sebelum masuk tahap backend.</p>
+      </div>
+      <div class="closing__badge">MVP<br>V1.0</div>
+    </div>
+  </div>
+</section>
+
+<footer>AL FATIH POS &amp; INVENTORY — MVP UNTUK PITCHING · 29/08/2026</footer>
+
+<script>
+  const CATS = ['Semua','Pulpen','Buku','Kertas','Fotocopy'];
+  const COLORS = { Pulpen:'#1567D6', Buku:'#0B1F4D', Kertas:'#2AA8F2', Pensil:'#5B6A85', Map:'#C98A12', Spidol:'#0B1F4D', Fotocopy:'#1567D6', Print:'#2AA8F2' };
+  const products = [
+    {id:1, name:'Pulpen Standard', sku:'ATK-0001', cat:'Pulpen', price:3000, stock:35, min:10, unit:'pcs', type:'PRODUCT'},
+    {id:2, name:'Buku Tulis 38 Lbr', sku:'ATK-0002', cat:'Buku', price:5000, stock:8, min:10, unit:'pcs', type:'PRODUCT'},
+    {id:3, name:'Kertas A4 70gr', sku:'ATK-0003', cat:'Kertas', price:55000, stock:0, min:5, unit:'rim', type:'PRODUCT'},
+    {id:4, name:'Pensil 2B', sku:'ATK-0004', cat:'Pulpen', price:2500, stock:60, min:15, unit:'pcs', type:'PRODUCT'},
+    {id:5, name:'Map Plastik', sku:'ATK-0005', cat:'Buku', price:2000, stock:24, min:10, unit:'pcs', type:'PRODUCT'},
+    {id:6, name:'Spidol Whiteboard', sku:'ATK-0006', cat:'Buku', price:8000, stock:6, min:8, unit:'pcs', type:'PRODUCT'},
+    {id:7, name:'Stapler No.10', sku:'ATK-0007', cat:'Kertas', price:12000, stock:15, min:5, unit:'pcs', type:'PRODUCT'},
+    {id:8, name:'Fotocopy A4', sku:'JSA-0001', cat:'Fotocopy', price:500, stock:null, min:null, unit:'lembar', type:'SERVICE'},
+    {id:9, name:'Print Warna A4', sku:'JSA-0002', cat:'Fotocopy', price:2000, stock:null, min:null, unit:'lembar', type:'SERVICE'},
+    {id:10, name:'Laminating A4', sku:'JSA-0003', cat:'Fotocopy', price:5000, stock:null, min:null, unit:'lembar', type:'SERVICE'},
+  ];
+
+  function rp(n){ return 'Rp' + Math.round(n).toLocaleString('id-ID'); }
+
+  let activeCat = 'Semua';
+  let cart = {};
+  const diskonFlat = 0;
+  let payMethod = 'Cash';
+  let cashGiven = 0;
+  let lastInvoiceCounter = 1;
+
+  function renderChips(){
+    document.getElementById('chipRow').innerHTML = CATS.map(c =>
+      `<button type="button" class="chip ${c===activeCat?'is-active':''}" onclick="setCat('${c}')">${c}</button>`).join('');
+  }
+  function setCat(c){ activeCat = c; renderChips(); renderGrid(); }
+
+  function renderGrid(){
+    const grid = document.getElementById('productGrid');
+    const list = products.filter(p => activeCat==='Semua' || p.cat===activeCat);
+    grid.innerHTML = list.map(p => {
+      const out = p.type==='PRODUCT' && p.stock===0;
+      const initials = p.name.split(' ').slice(0,2).map(w=>w[0]).join('').toUpperCase();
+      const stockLine = p.type==='SERVICE' ? 'Jasa · per ' + p.unit : (out ? 'Stok habis' : p.stock + ' ' + p.unit + ' tersisa');
+      return `<div class="pcard ${out?'out':''}" onclick="${out?'':'addToCart('+p.id+')'}">
+        <div class="pcard__thumb" style="background:${COLORS[p.cat]||'#0B1F4D'}">${initials}</div>
+        <div class="pcard__name">${p.name}</div>
+        <div class="pcard__meta">${stockLine}</div>
+        <div class="pcard__row">
+          <span class="pcard__price">${rp(p.price)}</span>
+          <button class="pcard__add" type="button" ${out?'disabled':''} onclick="event.stopPropagation(); ${out?'':'addToCart('+p.id+')'}">+</button>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function addToCart(id){
+    const p = products.find(x=>x.id===id);
+    if(p.type==='PRODUCT'){
+      const currentQty = cart[id]||0;
+      if(currentQty+1 > p.stock){ return; }
+    }
+    cart[id] = (cart[id]||0) + 1;
+    renderCart();
+  }
+  function changeQty(id, delta){
+    const p = products.find(x=>x.id===id);
+    let q = (cart[id]||0) + delta;
+    if(p.type==='PRODUCT' && q > p.stock) q = p.stock;
+    if(q <= 0){ delete cart[id]; } else { cart[id] = q; }
+    renderCart();
+  }
+
+  function renderCart(){
+    const items = Object.keys(cart).map(id => { const p = products.find(x=>x.id==id); return {p, qty: cart[id]}; });
+    const wrap = document.getElementById('cartItems');
+    document.getElementById('cartCountLabel').textContent = `Keranjang (${items.length} item)`;
+    if(items.length===0){
+      wrap.innerHTML = '<div class="cart__empty">Keranjang masih kosong.<br>Tap produk untuk mulai transaksi.</div>';
+    } else {
+      wrap.innerHTML = items.map(it => `
+        <div class="citem">
+          <div class="citem__name">${it.p.name}<span class="citem__sub">${rp(it.p.price)} / ${it.p.unit}</span></div>
+          <div class="qtystep">
+            <button type="button" onclick="changeQty(${it.p.id},-1)">−</button>
+            <span>${it.qty}</span>
+            <button type="button" onclick="changeQty(${it.p.id},1)">+</button>
+          </div>
+          <div class="citem__total">${rp(it.p.price*it.qty)}</div>
+        </div>`).join('');
+    }
+    const subtotal = items.reduce((s,it)=> s + it.p.price*it.qty, 0);
+    const total = Math.max(subtotal - diskonFlat, 0);
+    document.getElementById('tSubtotal').textContent = rp(subtotal);
+    document.getElementById('tDiskon').textContent = rp(diskonFlat);
+    document.getElementById('tTotal').textContent = rp(total);
+    document.getElementById('payBtn').disabled = items.length===0;
+    document.getElementById('payBtn').onclick = items.length ? openPay : null;
+  }
+
+  const methods = ['Cash','QRIS','Transfer','Debit'];
+  function renderPayMethods(){
+    document.getElementById('payMethods').innerHTML = methods.map(m =>
+      `<button type="button" class="${m===payMethod?'is-active':''}" onclick="setMethod('${m}')">${m}</button>`).join('');
+    document.getElementById('cashArea').style.display = payMethod==='Cash' ? 'block' : 'none';
+  }
+  function setMethod(m){ payMethod = m; cashGiven = 0; renderPayMethods(); updateKembali(); }
+
+  function currentTotal(){
+    const subtotal = Object.keys(cart).reduce((s,id)=>{ const p = products.find(x=>x.id==id); return s + p.price*cart[id]; },0);
+    return Math.max(subtotal - diskonFlat, 0);
+  }
+
+  function renderCashGrid(){
+    const total = currentTotal();
+    const presets = [total, 20000, 50000, 100000].filter((v,i,a)=>a.indexOf(v)===i && v>0);
+    document.getElementById('cashGrid').innerHTML = presets.slice(0,4).map(v =>
+      `<button type="button" onclick="setCash(${v})">${v===total?'Uang Pas':rp(v)}</button>`).join('');
+  }
+  function setCash(v){ cashGiven = v; updateKembali(); }
+  function updateKembali(){
+    const total = currentTotal();
+    const kembali = payMethod==='Cash' ? Math.max(cashGiven - total, 0) : 0;
+    document.getElementById('kembaliVal').textContent = rp(kembali);
+  }
+
+  function openPay(){
+    payMethod='Cash'; cashGiven=0;
+    renderPayMethods(); renderCashGrid(); updateKembali();
+    document.getElementById('payOverlay').classList.add('show');
+  }
+  function closePay(){ document.getElementById('payOverlay').classList.remove('show'); }
+
+  function confirmPay(){
+    const total = currentTotal();
+    if(payMethod==='Cash' && cashGiven < total){ setCash(total); }
+    const bayar = payMethod==='Cash' ? Math.max(cashGiven,total) : total;
+    const kembali = payMethod==='Cash' ? bayar-total : 0;
+
+    const items = Object.keys(cart).map(id=>{ const p=products.find(x=>x.id==id); return {p, qty:cart[id]}; });
+    const subtotal = items.reduce((s,it)=>s+it.p.price*it.qty,0);
+
+    document.getElementById('rInvoice').textContent = 'AF-20260829-' + String(lastInvoiceCounter).padStart(4,'0');
+    document.getElementById('rItems').innerHTML = items.map(it => `
+      <div class="rline"><span>${it.p.name}</span><span></span></div>
+      <div class="rline dim"><span>${it.qty} x ${rp(it.p.price)}</span><span>${rp(it.qty*it.p.price)}</span></div>
+    `).join('');
+    document.getElementById('rSubtotal').textContent = rp(subtotal);
+    document.getElementById('rDiskon').textContent = rp(diskonFlat);
+    document.getElementById('rTotal').textContent = rp(total);
+    document.getElementById('rMethodLabel').textContent = payMethod;
+    document.getElementById('rBayar').textContent = rp(bayar);
+    document.getElementById('rKembali').textContent = rp(kembali);
+
+    closePay();
+    const stamp = document.querySelector('.receipt__stamp');
+    stamp.style.animation = 'none'; void stamp.offsetWidth; stamp.style.animation = '';
+    document.getElementById('receiptOverlay').classList.add('show');
+  }
+  function closeReceipt(){ document.getElementById('receiptOverlay').classList.remove('show'); }
+  function newTransaction(){
+    lastInvoiceCounter++;
+    cart = {};
+    renderCart(); renderGrid();
+    closeReceipt();
+  }
+
+  function renderAlerts(){
+    const alerts = products.filter(p => p.type==='PRODUCT' && (p.stock===0 || p.stock<=p.min));
+    document.getElementById('alertList').innerHTML = alerts.map(p => {
+      const habis = p.stock===0;
+      return `<div class="alertrow">
+        <div><div class="alertrow__name">${p.name}</div><div class="alertrow__meta">Min. ${p.min} ${p.unit}</div></div>
+        <span class="stamp-tag ${habis?'habis':'menipis'}">${habis?'Stok Habis':'Stok Menipis'}</span>
+      </div>`;
+    }).join('');
+  }
+
+  let tableFilter = 'ALL';
+  function renderTable(){
+    const q = document.getElementById('tableSearch').value.trim().toLowerCase();
+    const rows = products.filter(p => {
+      const matchType = tableFilter==='ALL' || p.type===tableFilter;
+      const matchQ = !q || p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q);
+      return matchType && matchQ;
+    });
+    document.getElementById('tableBody').innerHTML = rows.map(p => {
+      let status, cls;
+      if(p.type==='SERVICE'){ status='Jasa'; cls='aman'; }
+      else if(p.stock===0){ status='Habis'; cls='habis'; }
+      else if(p.stock<=p.min){ status='Menipis'; cls='menipis'; }
+      else { status='Aman'; cls='aman'; }
+      return `<tr>
+        <td class="cell-sku">${p.sku}</td>
+        <td class="cell-name">${p.name}</td>
+        <td class="cell-cat">${p.cat}</td>
+        <td class="cell-stock">${p.type==='SERVICE' ? '—' : p.stock}</td>
+        <td class="cell-cat">${p.unit}</td>
+        <td class="cell-price">${rp(p.price)}</td>
+        <td><span class="stamp-tag ${cls}">${status}</span></td>
+      </tr>`;
+    }).join('');
+  }
+
+  document.querySelectorAll('.tchip').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.tchip').forEach(b=>b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      tableFilter = btn.dataset.tf;
+      renderTable();
+    });
+  });
+  document.getElementById('tableSearch').addEventListener('input', renderTable);
+
+  const io = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('is-visible'); io.unobserve(e.target); } });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  renderChips();
+  renderGrid();
+  renderCart();
+  renderAlerts();
+  renderTable();
+</script>
+</body>
+</html>
